@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+    <title></title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/curl/0.7.3/curl-for-jQuery/curl.js"></script>
+    <script>
+        curl(['../css','../dom','../state','../lib/fn','../lib/list','../form/parse','../form/reset','domReady!'],
+            function(css,dom,state,fn,list,parse,reset) {
+            /* Copyright 2013 Brian Cavalier */
+
+            init();
+
+            function init() {
+                var handleSubmit, handleClick, formNode, listNode,
+                    addItem, resetForm, countItems, removeItem;
+
+                formNode = document.getElementById('form');
+                listNode = document.getElementById('list');
+
+                addItem = state.get()
+                .chain(fn.sequence(preventDefault, toTarget, parse, toNode, withState(listNode)))
+                .chain(fn.sequence(fn.curry(appendNode), state.gets));
+
+                resetForm = state.of(formNode).map(reset);
+
+                removeItem = state.get()
+                    .map(preventDefault)
+                    .map(toTarget)
+                    .map(removeNode);
+
+                countItems = state.get()
+                    .map(dom.qsa('li'))
+                    .map(list.len)
+                    .chain(fn.sequence(css.lift2(css.cardinality('todos')), state.gets));
+
+                handleSubmit = state.run(state.sequence(addItem, countItems, resetForm));
+                handleClick = state.run(state.sequence(removeItem, state.put(listNode), countItems));
+
+                formNode.addEventListener('submit', function(e) {
+                    try {
+                        handleSubmit(e);
+                    } catch(ex) {
+                        console.error(ex);
+                    }
+                });
+                listNode.addEventListener('click', handleClick);
+
+                state.run(countItems, listNode);
+            }
+
+            function withState(s) {
+                return function(x) {
+                    return state(function() { return [x, s] });
+                };
+            }
+
+            function preventDefault(e) {
+                e.preventDefault();
+                return e;
+            }
+
+            function toTarget(e) {
+                return e.target;
+            }
+
+            function toNode(item) {
+                var node = document.createElement('li');
+                node.innerHTML = item.description;
+                return node;
+            }
+
+            function appendNode(node, list) {
+                list.appendChild(node);
+                return list;
+            }
+
+            function removeNode(node) {
+                if(node.parentNode) {
+                    node.parentNode.removeChild(node);
+                }
+
+                return node;
+            }
+        });
+
+    </script></head>
+<body>
+<form id="form" action="">
+    <input type="text" name="description"/>
+</form>
+<ul id="list"></ul>
+</body>
+</html>

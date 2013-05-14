@@ -10,10 +10,10 @@
 (function(define) {
 define(function(require) {
 
-	var curry, fold, undef;
+	var curry, fold1, undef;
 
 	curry = require('./lib/fn').curry;
-	fold = require('./lib/list').fold;
+	fold1 = require('./lib/list').fold1;
 
 	state.of = State.of = of;
 	state.get = get;
@@ -96,7 +96,7 @@ define(function(require) {
 	}
 
 	function sequence() {
-		return fold(function(s, next) {
+		return fold1(function(s, next) {
 			return s.chain(function() {
 				return next;
 			});

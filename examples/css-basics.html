@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+	<title></title>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/curl/0.7.3/curl-for-jQuery/curl.js"></script>
+    <script>
+        curl(['../css', '../lib/fn', '../lib/list', 'domReady!'], function(css, fn, list) {
+            /* Copyright 2013 Brian Cavalier */
+            var node1, setState, updateNode, nodes;
+
+
+            node1 = document.getElementById('test1');
+
+            // Compose 2 css state transformers
+        setState = css.sequence(
+                css.range({ r1: 1, r2: 10 }),
+                css.map({ m1: 1, m2: 2 })
+            );
+
+            // Use it to transform a "class list"
+            // Note that the node itself is not affected
+            console.log(setState(2, node1.className), node1.className);
+
+            // Further compose with another transformer
+            setState = css.sequence(
+                setState,
+                css.toggle('t1')
+            );
+
+            // Use it to transform the "class list" again
+            // Again, the node is not affected
+            console.log(setState(2, node1.className), node1.className);
+            console.log(fn.flipc(setState)(node1.className, 2), node1.className);
+
+            // Ok, further compose!
+            // setState is now map(toggle(map(range)))
+            setState = css.sequence(
+                setState,
+                css.map({ x: 2, y: 3 })
+            );
+
+            // Use it to transform the "class list" again
+            console.log(setState(2, node1.className), node1.className);
+
+            // But, what if we actually want to use it on a DOM Node?
+            // Use css.lift to lift it and run it on a DOM Node
+            // This actually modifies the node's class list. Yay!
+            updateNode = css.lift(setState(2));
+            console.log(updateNode(node1), node1.className);
+
+            // Since we have a function that can update any DOM Node,
+            // we can apply that function to a list of DOM Nodes
+            nodes = document.querySelectorAll('.test2');
+            console.log(list.map(updateNode, nodes), nodes);
+
+            // Almost there, reset!
+            node1.className = '';
+
+            // What if we always want to update the *same* DOM Node,
+            // but using different values?
+            // flip() to the rescue
+            updateNode = fn.flipc(css.lift2(setState))(node1);
+            console.log(updateNode(2), node1.className);
+            console.log(updateNode(1), node1.className);
+
+        });
+
+    </script></head>
+<body>
+	<!-- test fixture nodes -->
+	<p id="test1"></p>
+	<p class="test2"></p>
+	<p class="test2"></p>
+	<p class="test2"></p>
+</body>
+</html>
