@@ -4,7 +4,9 @@
 	<title></title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/curl/0.7.3/curl-for-jQuery/curl.js"></script>
     <script>
-        curl(['../css', '../st', '../lib/fn', '../lib/list', 'domReady!'], function(css, st, fn, list) {
+        curl({ baseUrl: '..' },
+            ['css','st','lib/fn','lib/list','domReady!'],
+            function(css, st, fn, list) {
             /* Copyright 2013 Brian Cavalier */
             var node1, setState, updateNode, nodes;
 
