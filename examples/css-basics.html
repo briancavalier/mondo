@@ -4,15 +4,14 @@
 	<title></title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/curl/0.7.3/curl-for-jQuery/curl.js"></script>
     <script>
-        curl(['../css', '../lib/fn', '../lib/list', 'domReady!'], function(css, fn, list) {
+        curl(['../css', '../st', '../lib/fn', '../lib/list', 'domReady!'], function(css, st, fn, list) {
             /* Copyright 2013 Brian Cavalier */
             var node1, setState, updateNode, nodes;
-
 
             node1 = document.getElementById('test1');
 
             // Compose 2 css state transformers
-        setState = css.sequence(
+            setState = st.sequence(
                 css.range({ r1: 1, r2: 10 }),
                 css.map({ m1: 1, m2: 2 })
             );
@@ -22,7 +21,7 @@
             console.log(setState(2, node1.className), node1.className);
 
             // Further compose with another transformer
-            setState = css.sequence(
+            setState = st.sequence(
                 setState,
                 css.toggle('t1')
             );
@@ -34,7 +33,7 @@
 
             // Ok, further compose!
             // setState is now map(toggle(map(range)))
-            setState = css.sequence(
+            setState = st.sequence(
                 setState,
                 css.map({ x: 2, y: 3 })
             );

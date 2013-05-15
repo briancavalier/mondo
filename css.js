@@ -11,14 +11,13 @@
 (function(define) { 'use strict';
 define(function(require) {
 
-	var curry, toList, classRx, trimLeadingRx, splitClassNamesRx, undef;
+	var curry, toList, classes, addClass, removeClass, undef;
 
 	curry = require('./lib/fn').curry;
 	toList = require('./lib/list').from;
-
-	classRx = '(\\s+|^)(classNames)(\\b(?![\\-_])|$)';
-	trimLeadingRx = /^\s+/;
-	splitClassNamesRx = /(\b\s+\b)|(\s+)/g;
+	classes = require('./lib/classes');
+	addClass = classes.add;
+	removeClass = classes.remove;
 
 	return {
 		mapf: mapf,
@@ -27,8 +26,7 @@ define(function(require) {
 		range: range,
 		cardinality: cardinality,
 		lift: lift,
-		lift2: lift2,
-		sequence: sequence
+		lift2: lift2
 	};
 
 	function mapf(f) {
@@ -88,15 +86,6 @@ define(function(require) {
 		});
 	}
 
-	function sequence() {
-		var fs = toList(arguments);
-		return  curry(function (v, initial) {
-			return fs.reduce(function (state, f) {
-				return f(state[0], state[1]);
-			}, [v, initial]);
-		});
-	}
-
 	function lift(transform) {
 		return curry(function(node) {
 			var result = transform(node.className);
@@ -123,46 +112,6 @@ define(function(require) {
 		}, {});
 	}
 
-//--------------------------------------------------------------------
-// CSS Class helpers
-// Shamelessly derived from wire/lib/dom/base (author @unscriptable)
 
-	function addClass (className, str) {
-		var newClass;
-
-		if(!className) {
-			return str;
-		}
-
-		newClass = removeClass(className, str);
-
-		if(newClass && className) {
-			newClass += ' ';
-		}
-
-		return newClass + className;
-	}
-
-	function removeClass (removes, tokens) {
-		var rx;
-
-		if (!removes) {
-			return tokens;
-		}
-
-		// convert space-delimited tokens with bar-delimited (regexp `or`)
-		removes = removes.replace(splitClassNamesRx, function (m, inner, edge) {
-			// only replace inner spaces with |
-			return edge ? '' : '|';
-		});
-
-		// create one-pass regexp
-		rx = new RegExp(classRx.replace('classNames', removes), 'g');
-
-		// remove all tokens in one pass (wish we could trim leading
-		// spaces in the same pass! at least the trim is not a full
-		// scan of the string)
-		return tokens.replace(rx, '').replace(trimLeadingRx, '');
-	}
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
