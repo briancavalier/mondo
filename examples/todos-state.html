@@ -36,13 +36,7 @@
                 handleSubmit = state.run(state.sequence(addItem, countItems, resetForm));
                 handleClick = state.run(state.sequence(removeItem, state.put(listNode), countItems));
 
-                formNode.addEventListener('submit', function(e) {
-                    try {
-                        handleSubmit(e);
-                    } catch(ex) {
-                        console.error(ex);
-                    }
-                });
+                formNode.addEventListener('submit', handleSubmit);
                 listNode.addEventListener('click', handleClick);
 
                 state.run(countItems, listNode);
