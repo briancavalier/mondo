@@ -12,8 +12,8 @@ define(function(require) {
 
 	var curry, fold1, undef;
 
-	curry = require('./lib/fn').curry;
-	fold1 = require('./lib/list').fold1;
+	curry = require('./../lib/fn').curry;
+	fold1 = require('./../lib/list').fold1;
 
 	state.of = State.of = of;
 	state.get = get;

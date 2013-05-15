@@ -44,7 +44,7 @@
             // But, what if we actually want to use it on a DOM Node?
             // Use css.lift to lift it and run it on a DOM Node
             // This actually modifies the node's class list. Yay!
-            updateNode = css.lift(setState(2));
+            updateNode = css.lift(setState)(2);
             console.log(updateNode(node1), node1.className);
 
             // Since we have a function that can update any DOM Node,
@@ -58,7 +58,7 @@
             // What if we always want to update the *same* DOM Node,
             // but using different values?
             // flip() to the rescue
-            updateNode = fn.flipc(css.lift2(setState))(node1);
+            updateNode = fn.flipc(css.lift(setState))(node1);
             console.log(updateNode(2), node1.className);
             console.log(updateNode(1), node1.className);
 

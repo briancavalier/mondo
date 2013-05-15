@@ -4,7 +4,7 @@
     <title></title>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/curl/0.7.3/curl-for-jQuery/curl.js"></script>
     <script>
-        curl(['../css','../dom','../state','../lib/fn','../lib/list','../form/parse','../form/reset','domReady!'],
+        curl(['../css','../dom','../monad/state','../lib/fn','../lib/list','../form/parse','../form/reset','domReady!'],
             function(css,dom,state,fn,list,parse,reset) {
             /* Copyright 2013 Brian Cavalier */
 
@@ -31,7 +31,7 @@
                 countItems = state.get()
                     .map(dom.qsa('li'))
                     .map(list.len)
-                    .chain(fn.sequence(css.lift2(css.cardinality('todos')), state.gets));
+                    .chain(fn.sequence(css.lift(css.cardinality('todos')), state.gets));
 
                 handleSubmit = state.run(state.sequence(addItem, countItems, resetForm));
                 handleClick = state.run(state.sequence(removeItem, state.put(listNode), countItems));

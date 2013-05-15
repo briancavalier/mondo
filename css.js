@@ -25,8 +25,7 @@ define(function(require) {
 		toggle: toggle,
 		range: range,
 		cardinality: cardinality,
-		lift: lift,
-		lift2: lift2
+		lift: curry(lift)
 	};
 
 	function mapf(f) {
@@ -86,24 +85,11 @@ define(function(require) {
 		});
 	}
 
-	function lift(transform) {
-		return curry(function(node) {
-			var result = transform(node.className);
-			node.className = result[1];
-			return [result[0], node];
-		});
+	function lift(transform, value, node) {
+		var result = transform(value, node.className);
+		node.className = result[1];
+		return [result[0], node];
 	}
-
-	function lift2(transform) {
-		return curry(function(value, node) {
-			var result = transform(value, node.className);
-			node.className = result[1];
-			return [result[0], node];
-		});
-	}
-
-//--------------------------------------------------------------------
-// Helpers
 
 	function pivotHash(hash) {
 		return Object.keys(hash).reduce(function(pivoted, k) {
@@ -111,7 +97,5 @@ define(function(require) {
 			return pivoted;
 		}, {});
 	}
-
-
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
