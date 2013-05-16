@@ -40,20 +40,20 @@ define(function(require) {
 			});
 		},
 
-		join: function() {
+		flatten: function() {
 			var runState = this.runState;
 			return new State(function(state) {
-				var result, joined;
+				var result, flattened;
 
 				result = runState(state);
-				joined = result[0].runState(result[1]);
+				flattened = result[0].runState(result[1]);
 
-				return joined;
+				return flattened;
 			});
 		},
 
 		chain: function(f) {
-			return this.map(f).join();
+			return this.map(f).flatten();
 		}
 	};
 

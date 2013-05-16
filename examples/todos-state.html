@@ -21,8 +21,8 @@
                 getTarget = pluck('target');
 
                 addItem = state.get()
-                .chain(fn.sequence(preventDefault, getTarget, parse, toNode, withState(listNode)))
-                .chain(fn.sequence(fn.curry(appendNode), state.gets));
+                    .chain(fn.sequence(preventDefault, getTarget, parse, toNode, withState(listNode)))
+                    .chain(fn.sequence(fn.curry(appendNode), state.gets));
 
                 resetForm = state.of(formNode).map(reset);
 
