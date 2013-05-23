@@ -20,8 +20,9 @@ define(function(require) {
 		of: of,
 		empty: empty,
 		append: curry(append),
+		flatten: flatten,
 		map: curry(map),
-		chain: curry(chain),
+		flatMap: curry(flatMap),
 		fold: curry(fold),
 		apply: curry(apply)
 	};
@@ -32,7 +33,7 @@ define(function(require) {
 
 	function empty(a) {
 		return typeof a.empty === 'function' ? a.empty :
-			   a.constructor === Function ? new a() : new a.constructor();
+			   typeof a === 'function' ? new a() : new a.constructor();
 	}
 
 	function append(a, b) {
@@ -57,7 +58,7 @@ define(function(require) {
 		return foldable.reduce(f, initial);
 	}
 
-	function chain(f, m) {
+	function flatMap(f, m) {
 		if(typeof m.chain === 'function') {
 			return m.chain(f);
 		}
@@ -73,7 +74,7 @@ define(function(require) {
 		return fold(append, empty(m), m);
 	}
 
-	function apply(functor, applicative) {
+	function apply(applicative, functor) {
 		if(typeof applicative.ap === 'function') {
 			return applicative.ap(functor);
 		}

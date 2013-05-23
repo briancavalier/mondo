@@ -11,12 +11,12 @@ var applicative = [
 		return x + 2;
 	}];
 
-r = mondo.apply([1,2,3], applicative);
+r = mondo.apply(applicative, [1,2,3]);
 
 console.log(r);
 
-r = mondo.apply(state.get(), applicative);
-console.log(mondo.apply(1, r.map(function(s) { return state.run(s); })));
+r = mondo.apply(applicative, state.get());
+console.log(mondo.apply(r.map(function(s) { return state.run(s); }), 1));
 
 var m1 = new Maybe(3);
 var m2 = new Maybe(6);
